@@ -1,0 +1,99 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMH+kS+ZemvM9eAzL2RzZSb",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/dawsong1011/ML-stuff/blob/messing-around/This-is-a-model\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 5,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3Y6IoBBreqYQ",
+        "outputId": "6f200903-0610-4046-dc44-123a0935158d"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Epoch 1/5\n",
+            "1875/1875 [==============================] - 5s 3ms/step - loss: 0.2955 - accuracy: 0.9146\n",
+            "Epoch 2/5\n",
+            "1875/1875 [==============================] - 4s 2ms/step - loss: 0.1407 - accuracy: 0.9582\n",
+            "Epoch 3/5\n",
+            "1875/1875 [==============================] - 4s 2ms/step - loss: 0.1047 - accuracy: 0.9685\n",
+            "Epoch 4/5\n",
+            "1875/1875 [==============================] - 7s 4ms/step - loss: 0.0870 - accuracy: 0.9731\n",
+            "Epoch 5/5\n",
+            "1875/1875 [==============================] - 4s 2ms/step - loss: 0.0757 - accuracy: 0.9762\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<keras.src.callbacks.History at 0x7cfbc7b9b430>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 5
+        }
+      ],
+      "source": [
+        "import tensorflow as tf\n",
+        "\n",
+        "mnist =tf.keras.datasets.mnist\n",
+        "(x_train,y_train), (x_test,y_test) = mnist.load_data()\n",
+        "\n",
+        "x_train, x_test = x_train/ 255.0, x_test/ 255.0\n",
+        "\n",
+        "model = tf.keras.models.Sequential([\n",
+        "  tf.keras.layers.Flatten(input_shape=(28, 28)),\n",
+        "  tf.keras.layers.Dense(128, activation='relu'),\n",
+        "  tf.keras.layers.Dropout(0.2),\n",
+        "  tf.keras.layers.Dense(10)\n",
+        "])\n",
+        "\n",
+        "predictions = model(x_train[:1]).numpy()\n",
+        "predictions\n",
+        "\n",
+        "tf.nn.softmax(predictions).numpy()\n",
+        "\n",
+        "loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)\n",
+        "\n",
+        "loss_fn(y_train[:1], predictions).numpy()\n",
+        "\n",
+        "model.compile(optimizer='adam',\n",
+        "              loss=loss_fn,\n",
+        "              metrics=['accuracy'])\n",
+        "\n",
+        "model.fit(x_train, y_train, epochs=5)\n"
+      ]
+    }
+  ]
+}
