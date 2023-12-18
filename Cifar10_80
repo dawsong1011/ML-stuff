@@ -1,0 +1,137 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "gpuType": "T4",
+      "toc_visible": true,
+      "authorship_tag": "ABX9TyP67N59IOpRqZGOx84M50nJ",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    },
+    "accelerator": "GPU"
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/dawsong1011/ML-stuff/blob/main/Cifar10_80\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 17,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ZEE_iq1q3pRZ",
+        "outputId": "48512d38-cf98-494d-cc4e-708244bd19af"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Epoch 1/10\n",
+            "1563/1563 [==============================] - 18s 8ms/step - loss: 1.4393 - accuracy: 0.4888 - precision_10: 0.6730 - recall_10: 0.3078\n",
+            "Epoch 2/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 1.0291 - accuracy: 0.6372 - precision_10: 0.7711 - recall_10: 0.5004\n",
+            "Epoch 3/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 0.9105 - accuracy: 0.6825 - precision_10: 0.7946 - recall_10: 0.5702\n",
+            "Epoch 4/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 0.8280 - accuracy: 0.7108 - precision_10: 0.8085 - recall_10: 0.6117\n",
+            "Epoch 5/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 0.7673 - accuracy: 0.7339 - precision_10: 0.8246 - recall_10: 0.6481\n",
+            "Epoch 6/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 0.7248 - accuracy: 0.7491 - precision_10: 0.8314 - recall_10: 0.6702\n",
+            "Epoch 7/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 0.6837 - accuracy: 0.7593 - precision_10: 0.8361 - recall_10: 0.6865\n",
+            "Epoch 8/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 0.6507 - accuracy: 0.7723 - precision_10: 0.8441 - recall_10: 0.7054\n",
+            "Epoch 9/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 0.6226 - accuracy: 0.7823 - precision_10: 0.8493 - recall_10: 0.7209\n",
+            "Epoch 10/10\n",
+            "1563/1563 [==============================] - 13s 8ms/step - loss: 0.5992 - accuracy: 0.7901 - precision_10: 0.8517 - recall_10: 0.7316\n",
+            "313/313 [==============================] - 2s 4ms/step - loss: 0.5844 - accuracy: 0.8005 - precision_10: 0.8590 - recall_10: 0.7408\n",
+            "Test accuracy: 0.8004999756813049\n",
+            "Test precision: 0.8589981198310852\n",
+            "Test recall: 0.7408000230789185\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Importing necessary libraries\n",
+        "from tensorflow.keras.datasets import cifar10\n",
+        "from tensorflow.keras.models import Sequential\n",
+        "from tensorflow.keras.layers import Dense, Flatten,Conv2D, MaxPooling2D, Dropout\n",
+        "from tensorflow.keras.utils import to_categorical\n",
+        "from tensorflow.keras.metrics import Precision, Recall\n",
+        "from tensorflow.keras.layers import BatchNormalization, Activation\n",
+        "\n",
+        "\n",
+        "# Loading the dataset\n",
+        "(train_images, train_labels), (test_images, test_labels) = cifar10.load_data()\n",
+        "\n",
+        "# Preprocessing the data\n",
+        "train_images = train_images / 255.0\n",
+        "test_images = test_images / 255.0\n",
+        "train_labels = to_categorical(train_labels)\n",
+        "test_labels = to_categorical(test_labels)\n",
+        "\n",
+        "# Building the model\n",
+        "model = Sequential([\n",
+        "    Conv2D(32, (3, 3), padding='same', input_shape=(32, 32, 3)),\n",
+        "    BatchNormalization(),\n",
+        "    Activation('relu'),\n",
+        "    Conv2D(32, (3, 3), padding='same'),\n",
+        "    BatchNormalization(),\n",
+        "    Activation('relu'),\n",
+        "    MaxPooling2D((2, 2)),\n",
+        "    Dropout(0.25),\n",
+        "\n",
+        "    Conv2D(64, (3, 3), padding='same'),\n",
+        "    BatchNormalization(),\n",
+        "    Activation('relu'),\n",
+        "    Conv2D(64, (3, 3), padding='same'),\n",
+        "    BatchNormalization(),\n",
+        "    Activation('relu'),\n",
+        "    MaxPooling2D((2, 2)),\n",
+        "    Dropout(0.25),\n",
+        "\n",
+        "    Flatten(),\n",
+        "    Dense(128),\n",
+        "    BatchNormalization(),\n",
+        "    Activation('relu'),\n",
+        "    Dropout(0.5),\n",
+        "    Dense(10, activation='softmax')\n",
+        "])\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Compiling the model\n",
+        "model.compile(optimizer='adam', loss='categorical_crossentropy',  metrics=['accuracy', Precision(), Recall()])\n",
+        "# Training the model\n",
+        "model.fit(train_images, train_labels, epochs=10, batch_size=32)\n",
+        "\n",
+        "# Evaluating the model\n",
+        "\n",
+        "test_loss, test_acc, test_precision, test_recall  = model.evaluate(test_images, test_labels)\n",
+        "print('Test accuracy:', test_acc)\n",
+        "print('Test precision:', test_precision)\n",
+        "print('Test recall:', test_recall)"
+      ]
+    }
+  ]
+}
